@@ -42,3 +42,7 @@ yarn-error.log*
 
 # stylelint
 .stylelintcache
+
+#ide
+.vscode
+.idea

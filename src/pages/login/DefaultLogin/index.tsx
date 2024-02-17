@@ -38,7 +38,7 @@ const DefaultLogin = () => {
         },
         onSuccess(res, params: any) {
             const {status, data} = res
-            if (status === 0) {
+            if (status === 200) {
                 params = params[0]
 
                 const _data = params.remember ? {username: params.username, password: params.password} : {}
@@ -76,7 +76,7 @@ const DefaultLogin = () => {
 
     return (
         <Bg>
-            <Card className="p-15px shadow-sm">
+            <Card className="shadow-sm p-15px">
                 <div className="w-[320px] p-2">
                     <div className="flex justify-between">
                         <Image src={getSetting('logo')} width={42} preview={false}/>
