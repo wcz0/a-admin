@@ -15,6 +15,7 @@ coverage
 *.local
 stats.html
 
+
 /cypress/videos/
 /cypress/screenshots/
 
@@ -23,6 +24,7 @@ stats.html
 !.vscode/extensions.json
 !.vscode/launch.json
 !.vscode/settings.json
+.vscode
 .idea
 *.suo
 *.ntvs*
@@ -30,6 +32,11 @@ stats.html
 *.sln
 *.sw?
 
+
+
 /src/typings/components.d.ts
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
+.dist/*
+.dist
