@@ -20,17 +20,12 @@
 
 ```json
 {
-	{
   "status": 0,
   "msg": "Login Success",
   "doNotDisplayToast": 0,
-  "data": {
-    "token": "2|LwTQhahtp8NwFY1hGDzaJWqhzuIvxWMoMNYWiuJzffe2a9a4"
-  }
-}
+  "data": null
 }
 ```
-
 
 ```
 
