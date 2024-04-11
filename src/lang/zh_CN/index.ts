@@ -59,7 +59,6 @@ export default {
         animate_out_scaleY: '垂直缩放',
         keep_alive: '页面缓存',
         dark_theme: '深色主题',
-        accordion_menu: '手风琴菜单',
     },
     tabMenu: {
         refresh: '刷新',

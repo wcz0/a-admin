@@ -1,6 +1,6 @@
 # amis 后台前端实现
 
-**Owl-admin 后台思路** 
+**Owl-admin 后台思路**
 
 使用amis低代码框架 实现 后台快速开发
 
@@ -15,6 +15,22 @@
 成功 200
 
 失败 400
+
+返回格式
+
+```json
+{
+	{
+  "status": 0,
+  "msg": "Login Success",
+  "doNotDisplayToast": 0,
+  "data": {
+    "token": "2|LwTQhahtp8NwFY1hGDzaJWqhzuIvxWMoMNYWiuJzffe2a9a4"
+  }
+}
+}
+```
+
 
 ```
 

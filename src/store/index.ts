@@ -16,8 +16,7 @@ const defaultSettings = {
     loginTemplate: 'default',
     keepAlive: false,
     enableTab: false,
-    tabIcon: true,
-    accordionMenu: false,
+    tabIcon: true
 }
 
 // 默认 token
@@ -54,7 +53,7 @@ export default function store(state = initialState, action) {
     switch (action.type) {
         case 'update-userInfo': {
             const {userInfo = initialState.userInfo, userLoading} = action.payload
-            if (userInfo?.name) {
+            if(userInfo?.name){
                 localStorage.setItem(getCacheKey('user_name'), userInfo?.name || '')
             }
             return {

@@ -6,7 +6,6 @@ import useRoute from '@/routes'
 import {getFlattenRoutes} from '@/routes/helpers'
 import {Icon} from '@iconify/react'
 import {Scrollbars} from 'react-custom-scrollbars'
-import useSetting from '@/hooks/useSetting'
 
 // 菜单
 const LayoutMenu = (
@@ -22,7 +21,6 @@ const LayoutMenu = (
         collapsed?: boolean,
     }
 ) => {
-    const {getSetting} = useSetting()
     const history = useHistory()
     const pathname = history.location.pathname
     const currentComponent = qs.parseUrl(pathname).url.slice(1)
@@ -90,21 +88,6 @@ const LayoutMenu = (
         currentRoute.component.preload().then(() => history.push(currentRoute.path))
     }
 
-    const splitPath = (path: string) => {
-        if(!path){
-            return ''
-        }
-
-        let arr = path.split('/')
-        let res = []
-        do {
-            res.push(arr.join('/'))
-            arr.pop()
-        } while (arr.length)
-
-        return res.filter(i => i)
-    }
-
     return (
         <Scrollbars autoHide>
             <Menu
@@ -113,7 +96,7 @@ const LayoutMenu = (
                 theme={theme}
                 openKeys={openKeys}
                 selectedKeys={selectedKeys}
-                onOpenChange={(keys: Array<any>) => setOpenKeys(getSetting('system_theme_setting.accordionMenu') ? splitPath(keys[keys.length - 1]) : keys)}
+                onOpenChange={(keys) => setOpenKeys(keys)}
                 onClick={clickMenu}
                 items={getMenus(customRoutes)}
             />
