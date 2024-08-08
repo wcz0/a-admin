@@ -1,6 +1,7 @@
 import React from 'react'
 import './style/index.less'
 import {render as renderAmis, RenderOptions} from 'amis'
+import {AlertComponent} from 'amis-ui'
 import {message} from 'antd'
 import {amisRequest} from '@/service/api'
 import {useHistory} from 'react-router'
@@ -17,10 +18,9 @@ const AmisRender = ({schema, className = ''}) => {
         'en': 'en-US'
     }
 
-    const props = {
-        locale: localeMap[getSetting('locale') || 'zh_CN'] || 'zh-CN',
-        location: history.location,
-    }
+    const localeValue = localeMap[getSetting('locale') || 'zh_CN'] || 'zh-CN'
+
+    const props = {locale: localeValue, location: history.location}
 
     const options: RenderOptions = {
         enableAMISDebug: getSetting('show_development_tools'),
@@ -40,7 +40,15 @@ const AmisRender = ({schema, className = ''}) => {
 
             message.success(props.locale === 'zh-CN' ? '复制成功' : 'Copy success')
         },
-        notify: (type: string, msg: string, conf) => {
+        notify: (type: string, msg: any, conf: any) => {
+            if (typeof msg !== 'string') {
+                msg = conf?.body
+            }
+
+            if (!msg?.length) {
+                return
+            }
+
             let handle = () => message.open({
                 content: msg,
                 type: (['info', 'success', 'error', 'warning', 'loading'].includes(type) ? type : 'info') as any,
@@ -54,6 +62,7 @@ const AmisRender = ({schema, className = ''}) => {
 
     return (
         <div className={className}>
+            <AlertComponent key="alert" locale={localeValue}/>
             {renderAmis(schema, props, options)}
         </div>
     )

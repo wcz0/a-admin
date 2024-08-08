@@ -89,6 +89,7 @@ export const DoubleLayout = () => {
     return (
         <Layout className="h-screen" hasSider>
             <Sider collapsedWidth={65}
+                   width={65}
                    theme={getSetting('system_theme_setting.darkTheme') ? 'light' : 'dark'}
                    className="border-r relative"
                    collapsed>
@@ -96,8 +97,8 @@ export const DoubleLayout = () => {
                     <LayoutLogo onlyLogo/>
                 </div>
 
-                <div className="w-full h-full pt-[65px]">
-                    <Scrollbars autoHide>
+                <Scrollbars autoHide className="custom-scrollbar">
+                    <div className="w-full h-full pt-[65px]">
                         {routes?.map(item => {
                             if (item?.meta?.hide) return null
                             const baseStyle = 'text-white flex flex-col items-center justify-center h-[65px] cursor-pointer'
@@ -119,8 +120,8 @@ export const DoubleLayout = () => {
                                 </div>
                             )
                         })}
-                    </Scrollbars>
-                </div>
+                    </div>
+                </Scrollbars>
             </Sider>
             <Layout>
                 <Sider hidden={!childrenRoutes?.length}

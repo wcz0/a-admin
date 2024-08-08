@@ -1,6 +1,8 @@
 import axios, {AxiosError, AxiosInstance, AxiosRequestConfig} from 'axios'
-import {message} from 'antd'
+import {message, notification} from 'antd'
+import {attachmentAdpator} from 'amis'
 import {goToLoginPage, inLoginPage, msgHandler, Token} from '@/utils/common'
+import {getCacheKey} from '@/utils/common'
 
 export default class CustomAxiosInstance {
     instance: AxiosInstance
@@ -17,8 +19,9 @@ export default class CustomAxiosInstance {
                 const handleConfig = {...config}
                 // 设置token
                 const token = Token().value
-
                 handleConfig.headers.Authorization = `Bearer ${token}`
+                // 设置语言
+                handleConfig.headers.locale = localStorage.getItem(getCacheKey('locale'))
 
                 return handleConfig
             },
@@ -56,8 +59,7 @@ export default class CustomAxiosInstance {
 
                         goToLoginPage()
                     }
-
-                    return response
+                    return await attachmentAdpator(response, () => '')
                 }
 
                 return response
@@ -66,7 +68,12 @@ export default class CustomAxiosInstance {
                 const msg = axiosError.response?.data?.message || axiosError.message
 
                 if (msg) {
-                    msgHandler(msg, message.error(msg))
+                    notification.error({
+                        message: axiosError.response?.data?.exception || '',
+                        description: msg
+                    })
+
+                    return {data: {status: 1, msg: ''}}
                 }
 
                 return {data: {status: 1, msg}}

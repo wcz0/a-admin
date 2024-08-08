@@ -57,8 +57,12 @@ export default {
         animate_out_scaleBig: 'ScaleBig',
         animate_out_scaleX: 'ScaleX',
         animate_out_scaleY: 'ScaleY',
-        keep_alive: 'Keep Alive',
+        keep_alive: 'Global Keep Alive',
         dark_theme: 'Dark Theme',
+        accordion_menu: 'Accordion Menu',
+        locale: 'Language',
+        locale_en: 'English',
+        locale_zh_CN: '简体中文'
     },
     tabMenu: {
         refresh: 'Refresh',

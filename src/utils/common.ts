@@ -1,7 +1,7 @@
 /**
  * 应用加载完成
  */
-export const appLoaded = () => setTimeout(() => document.getElementById('app-loader')?.remove(), 500)
+export const appLoaded = () => document.getElementById('app-loader')?.remove()
 
 /**
  * 注册全局函数
@@ -110,6 +110,10 @@ export const goToLoginPage = () => {
 }
 
 export const msgHandler = (msg, handle) => {
+    if(!msg?.length){
+        return
+    }
+
     const msgKey = 'owl-msg-' + msg
 
     if (localStorage.getItem(msgKey)) {

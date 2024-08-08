@@ -35,6 +35,8 @@ const useSetup = (store) => {
                 type: 'update-settings',
                 payload: {settings: res.data},
             })
+
+            localStorage.setItem(getCacheKey('locale'), res.data.locale)
             setLang(res.data.locale == 'zh_CN' ? 'zh-CN' : 'en-US')
             dynamicAssetsHandler(res.data.assets)
         },
@@ -86,18 +88,20 @@ const useSetup = (store) => {
 
     // 初始化
     const init = async () => {
-        await initSettings.runAsync()
-
-        if (Token().value) {
-            await initUserInfo.runAsync()
-            await window.$owl.refreshRoutes()
-        } else if (!inLoginPage()) {
-            goToLoginPage()
-        }
-
         clearMsgSign()
         registerFunctions()
         registerCustomComponents()
+
+        await initSettings.runAsync()
+
+        if (Token().value) {
+            let res = await initUserInfo.runAsync()
+            if (res.data?.code != 401) {
+                await window.$owl.refreshRoutes()
+            }
+        } else if (!inLoginPage()) {
+            goToLoginPage()
+        }
 
         appLoaded()
     }
