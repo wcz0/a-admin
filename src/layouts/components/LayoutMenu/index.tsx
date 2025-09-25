@@ -70,7 +70,7 @@ const LayoutMenu = (
             menus.push({
                 key: route.path.split('?')[0],
                 label: route.meta.title,
-                icon: <div className="!ml-[-2px]"><Icon icon={route.meta.icon}/></div>,
+                icon: <div className="!ml-[-2px]"><Icon icon={route.meta.icon} fontSize={18}/></div>,
                 children: route.children ? getMenus(route.children) : null,
             })
         }
@@ -90,19 +90,47 @@ const LayoutMenu = (
         currentRoute.component.preload().then(() => history.push(currentRoute.path))
     }
 
-    const splitPath = (path: string) => {
-        if(!path){
-            return ''
+    const pathMap = useMemo(() => {
+        const getMenuPaths = (pages) => {
+            const result = []
+
+            const traverse = (page, pathAccumulator) => {
+                const currentPath = [...pathAccumulator, page.path]
+                result.push(currentPath)
+
+                if (page.children && page.children.length > 0) {
+                    page.children.forEach(child => traverse(child, currentPath))
+                }
+            }
+
+            pages.forEach(page => traverse(page, []))
+            return result
         }
 
-        let arr = path.split('/')
-        let res = []
-        do {
-            res.push(arr.join('/'))
-            arr.pop()
-        } while (arr.length)
+        const list = getMenuPaths(customRoutes)
+        const result = new Map()
 
-        return res.filter(i => i)
+        list.forEach(items => {
+            const lastItem = items[items.length - 1] as string
+
+            if (lastItem.includes(':')) return
+
+            result.set(lastItem, items)
+        })
+
+        return result
+    }, [customRoutes])
+
+    const openChange = (keys: Array<any>) => {
+        const isOpen = keys.length > openKeys.length
+
+        // 没有开启 "手风琴" 或者 正在关闭菜单, 则直接返回
+        if (!isOpen || !getSetting('system_theme_setting.accordionMenu')) {
+            setOpenKeys(keys)
+            return
+        }
+
+        setOpenKeys(pathMap.get(keys[keys.length - 1]) || [])
     }
 
     return (
@@ -113,7 +141,7 @@ const LayoutMenu = (
                 theme={theme}
                 openKeys={openKeys}
                 selectedKeys={selectedKeys}
-                onOpenChange={(keys: Array<any>) => setOpenKeys(getSetting('system_theme_setting.accordionMenu') ? splitPath(keys[keys.length - 1]) : keys)}
+                onOpenChange={(keys: Array<any>) => openChange(keys)}
                 onClick={clickMenu}
                 items={getMenus(customRoutes)}
             />

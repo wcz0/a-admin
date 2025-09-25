@@ -6,8 +6,8 @@ import clipboard from '@/utils/clipboard'
 import 'amis-editor-core/lib/style.css'
 import './style/index.less'
 import useSetting from '@/hooks/useSetting'
-import {message} from 'antd'
-import {msgHandler} from '@/utils/common'
+import { toast } from 'amis-ui'
+import { toAxiosLike, wrapAxiosLikeIfAmbiguous } from '@/utils/amisAdaptor'
 
 function AmisEditor({onChange, preview, defaultSchema}: {onChange: (val) => void, preview: boolean, defaultSchema?: any}) {
     if (!defaultSchema) {
@@ -33,7 +33,10 @@ function AmisEditor({onChange, preview, defaultSchema}: {onChange: (val) => void
 
     const env = {
         enableAMISDebug: getSetting('show_development_tools'),
-        fetcher: ({url, method, data}) => amisRequest(url, method, data),
+        fetcher: async ({url, method, data}) => {
+            const res = await amisRequest(url, method, data)
+            return wrapAxiosLikeIfAmbiguous(toAxiosLike(res))
+        },
         updateLocation: (location, replace) => {
             replace || history.push(location)
         },
@@ -47,24 +50,7 @@ function AmisEditor({onChange, preview, defaultSchema}: {onChange: (val) => void
         copy: async (content) => {
             await clipboard(content)
 
-            message.success(props.locale === 'zh-CN' ? '复制成功' : 'Copy success')
-        },
-        notify: (type: string, msg: any, conf: any) => {
-            if (typeof msg !== 'string') {
-                msg = conf?.body
-            }
-
-            if (!msg?.length) {
-                return
-            }
-
-            let handle = () => message.open({
-                content: msg,
-                type: (['info', 'success', 'error', 'warning', 'loading'].includes(type) ? type : 'info') as any,
-                duration: (conf?.timeout || 3000) / 1000,
-            })
-
-            msgHandler(msg, handle)
+            toast.success(props.locale === 'zh-CN' ? '复制成功' : 'Copy success')
         },
         isCurrentUrl: (url: string) => history.location.pathname + history.location.search === url,
     }

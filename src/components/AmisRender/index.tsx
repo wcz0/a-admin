@@ -1,13 +1,12 @@
 import React from 'react'
 import './style/index.less'
 import {render as renderAmis, RenderOptions} from 'amis'
-import {AlertComponent} from 'amis-ui'
-import {message} from 'antd'
+import {toast} from 'amis-ui'
 import {amisRequest} from '@/service/api'
 import {useHistory} from 'react-router'
 import clipboard from '@/utils/clipboard'
 import useSetting from '@/hooks/useSetting'
-import {msgHandler} from '@/utils/common'
+import { toAxiosLike, wrapAxiosLikeIfAmbiguous } from '@/utils/amisAdaptor'
 
 const AmisRender = ({schema, className = ''}) => {
     const history = useHistory()
@@ -24,7 +23,10 @@ const AmisRender = ({schema, className = ''}) => {
 
     const options: RenderOptions = {
         enableAMISDebug: getSetting('show_development_tools'),
-        fetcher: ({url, method, data}) => amisRequest(url, method, data),
+        fetcher: async ({url, method, data}) => {
+            const res = await amisRequest(url, method, data)
+            return wrapAxiosLikeIfAmbiguous(toAxiosLike(res))
+        },
         updateLocation: (location, replace) => {
             replace || history.push(location)
         },
@@ -38,31 +40,15 @@ const AmisRender = ({schema, className = ''}) => {
         copy: async (content) => {
             await clipboard(content)
 
-            message.success(props.locale === 'zh-CN' ? '复制成功' : 'Copy success')
-        },
-        notify: (type: string, msg: any, conf: any) => {
-            if (typeof msg !== 'string') {
-                msg = conf?.body
-            }
-
-            if (!msg?.length) {
-                return
-            }
-
-            let handle = () => message.open({
-                content: msg,
-                type: (['info', 'success', 'error', 'warning', 'loading'].includes(type) ? type : 'info') as any,
-                duration: (conf?.timeout || 3000) / 1000,
-            })
-
-            msgHandler(msg, handle)
+            toast.success(props.locale === 'zh-CN' ? '复制成功' : 'Copy success')
         },
         isCurrentUrl: (url: string) => history.location.pathname + history.location.search === url,
     }
 
+    if (!schema) return null
+
     return (
         <div className={className}>
-            <AlertComponent key="alert" locale={localeValue}/>
             {renderAmis(schema, props, options)}
         </div>
     )
